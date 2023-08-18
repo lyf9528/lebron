@@ -1,0 +1,133 @@
+//首页
+type (
+	//推荐
+	RecommondRequest {
+		Cursor int64 `json:"cursor"` // 游标
+		Ps     int64 `json:"ps"`     // 每页数量`
+	}
+
+	RecommondResponse {
+		Products      []*Product `json:"products"`       // 商品列表
+		IsEnd         bool       `json:"is_end"`         // 是否结束
+		RecommondTime int64      `json:"recommond_time"` // 推荐时间
+	}
+
+	//商品
+	Product {
+		ID          int64   `json:"id"`          // 商品ID
+		Name        string  `json:"name"`        // 产品名称
+		Description string  `json:"description"` // 商品描述
+		Price       float64 `json:"price"`       // 商品价格
+		Stock       int64   `json:"stock"`       // 库存
+		Category    string  `json:"category"`    // 分类
+		Status      int64   `json:"status"`      // 状态：1-正常，2-下架
+		CreateTime  int64   `json:"create_time"` // 创建时间
+		UpdateTime  int64   `json:"update_time"` // 更新时间
+	}
+
+	//抢购
+	FlashSaleResponse {
+		StartTime int64      `json:"start_time"`
+		Products  []*Product `json:"products"`
+	}
+
+	//banner
+	BannerResponse {
+		Products []*Product `json:"products"`
+	}
+)
+
+//分类
+type (
+	CategoryListRequest {
+		Cursor   int64  `json:"cursor"`   // 游标
+		Ps       int64  `json:"ps"`       // 每页数量
+		Category string `json:"category"` //分类
+		Sort     string `json:"sort"`     //排序
+	}
+	CategoryListResponse {
+		Products []*Product `json:"products"`
+		IsEnd    int64      `json:"is_end"`
+		LastVal  string     `json:"last_val"`
+	}
+)
+
+//购物车
+type (
+	CartListRequest {
+		UID int64 `json:"uid"` // 用户ID
+	}
+	CartListResponse {
+		Products []*CartProduct `json:"products"`
+	}
+	CartProduct {
+		Product *Product `json:"product"`
+		Count   int64    `json:"count"`
+	}
+)
+
+//评论
+type (
+	//商品评论
+	ProductCommentRequest {
+		ProductID int64 `json:"product_id"` // 商品ID
+		Cursor    int64 `json:"cursor"`     // 游标
+		Ps        int64 `json:"ps"`         // 每页数量
+	}
+	ProductCommentResponse {
+		Comments    []*Comment `json:"comments"`
+		IsEnd       int64      `json:"is_end"`
+		CommentTime int64      `json:"comment_time"`
+	}
+	Comment {
+		ID         int64    `json:"id"`
+		ProductID  int64    `json:"product_id"`
+		Content    string   `json:"content"`
+		Images     []*Image `json:"images"`
+		User       *User    `json:"user"`
+		CreateTime int64    `json:"create_time"`
+		UpdateTime int64    `json:"update_time"`
+	}
+	User {
+		ID     int64  `json:"id"`
+		Name   string `json:"name"`
+		Avatar string `json:"avatar"`
+	}
+	Image {
+		ID  int64  `json:"id"`
+		URL string `json:"url"`
+	}
+)
+
+service api-api {
+	@doc "banner"
+	@handler HomeBanner
+	get /v1/home/banner returns (BannerResponse)
+
+	@doc "限时抢购"
+	@handler FlashSale
+	get /v1/flashsale returns(FlashSaleResponse)
+
+	@doc "推荐商品列表"
+	@handler Recommond
+	get /v1/recommond(RecommondRequest) returns(RecommondResponse)
+
+	@doc "分类商品列表"
+	@handler CategoryList
+	get /v1/category/list(CategoryListRequest) returns(CategoryListResponse)
+
+	@doc "购物车列表"
+	@handler CartList
+	get /v1/cart/list(CartListRequest) returns(CartListResponse)
+
+	@doc "商品评论列表"
+	@handler ProductCommont
+	get /v1/product/comment(ProductCommentRequest) returns(ProductCommentResponse)
+
+	//	@doc "订单列表"
+	//    @handler OrderList
+	//	get /v1/order/list(OrderListRequest) returns(OrderListResponse)
+	//
+	//	@doc "商品详情"
+	//	get /v1/product/detail(ProductDetailRequest) returns(ProductDetailResponse)
+}
