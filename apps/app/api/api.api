@@ -1,17 +1,5 @@
-//首页
+//基础数据
 type (
-	//推荐
-	RecommondRequest {
-		Cursor int64 `json:"cursor"` // 游标
-		Ps     int64 `json:"ps"`     // 每页数量`
-	}
-
-	RecommondResponse {
-		Products      []*Product `json:"products"`       // 商品列表
-		IsEnd         bool       `json:"is_end"`         // 是否结束
-		RecommondTime int64      `json:"recommond_time"` // 推荐时间
-	}
-
 	//商品
 	Product {
 		ID          int64   `json:"id"`          // 商品ID
@@ -23,6 +11,58 @@ type (
 		Status      int64   `json:"status"`      // 状态：1-正常，2-下架
 		CreateTime  int64   `json:"create_time"` // 创建时间
 		UpdateTime  int64   `json:"update_time"` // 更新时间
+	}
+	//订单
+	Order {
+		OrderID            string  `json:"order_id"`
+		Status             int32   `json:"status"`
+		Quantity           int64   `json:"quantity"`
+		Payment            float64 `json:"payment"`
+		TotalPrice         float64 `json:"total_price"`
+		CreateTime         int64   `json:"create_time"`
+		ProductID          int64   `json:"product_id"`
+		ProductName        string  `json:"product_name"`
+		ProductImage       string  `json:"product_image"`
+		ProductDescription string  `json:"product_description"`
+	}
+	//评论
+	Comment {
+		ID         int64    `json:"id"`
+		ProductID  int64    `json:"product_id"`
+		Content    string   `json:"content"`
+		Images     []*Image `json:"images"`
+		User       *User    `json:"user"`
+		CreateTime int64    `json:"create_time"`
+		UpdateTime int64    `json:"update_time"`
+	}
+	User {
+		ID     int64  `json:"id"`
+		Name   string `json:"name"`
+		Avatar string `json:"avatar"`
+	}
+	Image {
+		ID  int64  `json:"id"`
+		URL string `json:"url"`
+	}
+	//购物车商品
+	CartProduct {
+		Product *Product `json:"rpc"`
+		Count   int64    `json:"count"`
+	}
+)
+
+//首页
+type (
+	//推荐
+	RecommendRequest {
+		Cursor int64 `json:"cursor"` // 游标
+		Ps     int64 `json:"ps"`     // 每页数量`
+	}
+
+	RecommendResponse {
+		Products      []*Product `json:"products"`       // 商品列表
+		IsEnd         bool       `json:"is_end"`         // 是否结束
+		RecommondTime int64      `json:"recommond_time"` // 推荐时间
 	}
 
 	//抢购
@@ -52,23 +92,15 @@ type (
 	}
 )
 
-//购物车
 type (
+	//购物车
 	CartListRequest {
 		UID int64 `json:"uid"` // 用户ID
 	}
 	CartListResponse {
 		Products []*CartProduct `json:"products"`
 	}
-	CartProduct {
-		Product *Product `json:"product"`
-		Count   int64    `json:"count"`
-	}
-)
-
-//评论
-type (
-	//商品评论
+	//评论
 	ProductCommentRequest {
 		ProductID int64 `json:"product_id"` // 商品ID
 		Cursor    int64 `json:"cursor"`     // 游标
@@ -79,23 +111,25 @@ type (
 		IsEnd       int64      `json:"is_end"`
 		CommentTime int64      `json:"comment_time"`
 	}
-	Comment {
-		ID         int64    `json:"id"`
-		ProductID  int64    `json:"product_id"`
-		Content    string   `json:"content"`
-		Images     []*Image `json:"images"`
-		User       *User    `json:"user"`
-		CreateTime int64    `json:"create_time"`
-		UpdateTime int64    `json:"update_time"`
+	//订单列表
+	OrderListRequest {
+		UID    int64 `form:"uid"`
+		Status int32 `form:"status,optional"`
+		Cursor int64 `form:"cursor,optional"`
+		Ps     int64 `form:"ps,default=20"`
 	}
-	User {
-		ID     int64  `json:"id"`
-		Name   string `json:"name"`
-		Avatar string `json:"avatar"`
+	OrderListResponse {
+		Orders    []*Order `json:"orders"`
+		IsEnd     bool     `json:"is_end"` // 是否最后一页
+		OrderTime int64    `json:"order_time"`
 	}
-	Image {
-		ID  int64  `json:"id"`
-		URL string `json:"url"`
+	//商品详情
+	ProductDetailRequest {
+		ProductID int64 `form:"product_id"`
+	}
+	ProductDetailResponse {
+		Product  *Product   `json:"product"`
+		Comments []*Comment `json:"comments"`
 	}
 )
 
@@ -109,8 +143,8 @@ service api-api {
 	get /v1/flashsale returns(FlashSaleResponse)
 
 	@doc "推荐商品列表"
-	@handler Recommond
-	get /v1/recommond(RecommondRequest) returns(RecommondResponse)
+	@handler Recommend
+	get /v1/recommend(RecommendRequest) returns(RecommendResponse)
 
 	@doc "分类商品列表"
 	@handler CategoryList
@@ -124,10 +158,11 @@ service api-api {
 	@handler ProductCommont
 	get /v1/product/comment(ProductCommentRequest) returns(ProductCommentResponse)
 
-	//	@doc "订单列表"
-	//    @handler OrderList
-	//	get /v1/order/list(OrderListRequest) returns(OrderListResponse)
-	//
-	//	@doc "商品详情"
-	//	get /v1/product/detail(ProductDetailRequest) returns(ProductDetailResponse)
+	@doc "订单列表"
+	@handler OrderList
+	get /v1/order/list(OrderListRequest) returns(OrderListResponse)
+
+	@doc "商品详情"
+	@handler ProductDetail
+	get /v1/product/detail(ProductDetailRequest) returns(ProductDetailResponse)
 }

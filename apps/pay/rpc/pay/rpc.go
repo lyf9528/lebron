@@ -3,16 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
-	"lebron/apps/order/rpc/order"
+
+	"lebron/apps/pay/rpc/pay/internal/config"
+	"lebron/apps/pay/rpc/pay/internal/server"
+	"lebron/apps/pay/rpc/pay/internal/svc"
+	"lebron/apps/pay/rpc/pay/rpc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"lebron/apps/order/rpc/internal/config"
-	"lebron/apps/order/rpc/internal/server"
-	"lebron/apps/order/rpc/internal/svc"
 )
 
 var configFile = flag.String("f", "etc/rpc.yaml", "the config file")
@@ -25,7 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		order.RegisterOrderServer(grpcServer, server.NewOrderServer(ctx))
+		rpc.RegisterRpcServer(grpcServer, server.NewRpcServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
