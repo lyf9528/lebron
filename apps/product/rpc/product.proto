@@ -6,6 +6,7 @@ option go_package="./product";
 
 service Product {
   rpc Products(ProductsRequest) returns(ProductsResponse);
+  rpc Product(ProductItemRequest) returns(ProductItem);
 }
 
 message ProductsRequest {
@@ -21,4 +22,8 @@ message ProductItem {
   string name = 2;
   string description = 3;
   string image_url = 4;
+}
+
+message ProductItemRequest {
+  int64 product_id = 1;
 }

@@ -6,3 +6,6 @@ Etcd:
   Key: rpc.rpc
   User: root
   Pass: d0ZjxdlmUl
+
+DataSource: root:123456@tcp(127.0.0.1:3306)/orders?parseTime=true
+

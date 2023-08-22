@@ -15,7 +15,7 @@ import (
 	"lebron/apps/order/rpc/internal/svc"
 )
 
-var configFile = flag.String("f", "etc/rpc.yaml", "the config file")
+var configFile = flag.String("f", "etc/order.yaml", "the config file")
 
 func main() {
 	flag.Parse()
