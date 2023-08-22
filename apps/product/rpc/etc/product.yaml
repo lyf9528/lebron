@@ -1,5 +1,7 @@
 Name: rpc.rpc
 ListenOn: 0.0.0.0:8081
+Mode: dev
+
 Etcd:
   Hosts:
   - 127.0.0.1:2379
@@ -7,5 +9,15 @@ Etcd:
   User: root
   Pass: d0ZjxdlmUl
 
-DataSource: root:123456@tcp(127.0.0.1:3306)/orders?parseTime=true
+DataSource: root:123456@tcp(127.0.0.1:3306)/product?parseTime=true
 
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+
+Redis:
+  Key: rds
+  Host: 127.0.0.1:6379
+  Pass:
+  Type: node
