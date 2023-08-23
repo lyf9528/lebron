@@ -77,20 +77,8 @@ type (
 	}
 )
 
-//分类
-type (
-	CategoryListRequest {
-		Cursor   int64  `json:"cursor"`   // 游标
-		Ps       int64  `json:"ps"`       // 每页数量
-		Category string `json:"category"` //分类
-		Sort     string `json:"sort"`     //排序
-	}
-	CategoryListResponse {
-		Products []*Product `json:"products"`
-		IsEnd    int64      `json:"is_end"`
-		LastVal  string     `json:"last_val"`
-	}
-)
+
+
 
 type (
 	//购物车
@@ -130,6 +118,28 @@ type (
 	ProductDetailResponse {
 		Product  *Product   `json:"product"`
 		Comments []*Comment `json:"comments"`
+	}
+	//商品列表
+	ProductListRequest {
+		CategoryID int64 `json:category_id`
+		Cursor int64 `json:"cursor"`
+		Ps int64 `json:"ps"`
+	}
+	ProductListResponse {
+		Products []*Product `json:"products"`
+		IsEnd    int64      `json:"is_end"`
+	}
+	//分类商品列表
+	CategoryListRequest {
+		Cursor   int64  `json:"cursor"`   // 游标
+		Ps       int64  `json:"ps"`       // 每页数量
+		Category string `json:"category"` //分类
+		Sort     string `json:"sort"`     //排序
+	}
+	CategoryListResponse {
+		Products []*Product `json:"products"`
+		IsEnd    int64      `json:"is_end"`
+		LastVal  string     `json:"last_val"`
 	}
 )
 

@@ -7,6 +7,8 @@ option go_package="./product";
 service Product {
   rpc Products(ProductsRequest) returns(ProductsResponse);
   rpc Product(ProductItemRequest) returns(ProductItem);
+  rpc ProductList(ProductListRequest) returns(ProductListResponse);
+  rpc OperationProduct(OperationProductRequest) returns(OperationProductResponse);
 }
 
 message ProductsRequest {
@@ -22,8 +24,33 @@ message ProductItem {
   string name = 2;
   string description = 3;
   string image_url = 4;
+  int64 create_time = 5;
+  int64 stock = 6;
+  int64 cateid = 7;
+  double price = 8;
+  int64 status = 9;
 }
 
 message ProductItemRequest {
   int64 product_id = 1;
 }
+
+message ProductListRequest {
+  int64 cursor = 1;
+  int32 ps = 2;
+  int32 category_id = 3;
+  int64 product_id = 4;
+}
+
+message ProductListResponse{
+  bool is_end = 1;
+  int64 timestamp = 2;
+  int64 product_id = 3;
+  repeated ProductItem products = 4;
+}
+
+message OperationProductRequest{}
+message OperationProductResponse{
+  repeated ProductItem products = 1;
+}
+

@@ -2,7 +2,8 @@ package logic
 
 import (
 	"context"
-
+	"fmt"
+	"lebron/apps/product/model"
 	"lebron/apps/product/rpc/internal/svc"
 	"lebron/apps/product/rpc/product"
 
@@ -24,14 +25,18 @@ func NewProductLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductLo
 }
 
 func (l *ProductLogic) Product(in *product.ProductItemRequest) (*product.ProductItem, error) {
-	one, err := l.svcCtx.ProductModel.FindOne(l.ctx, in.GetProductId())
+	// 获取产品信息
+	v, err, _ := l.svcCtx.SingleGroup.Do(fmt.Sprintf("product:%d", in.ProductId), func() (interface{}, error) {
+		return l.svcCtx.ProductModel.FindOne(l.ctx, in.ProductId)
+	})
 	if err != nil {
 		return nil, err
 	}
+	p := v.(*model.Product)
 	return &product.ProductItem{
-		ProductId:   one.Id,
-		Name:        one.Name,
-		Description: one.Detail.String,
-		ImageUrl:    one.Images.String,
+		ProductId:   p.Id,
+		Name:        p.Name,
+		Description: p.Detail.String,
+		ImageUrl:    p.Images.String,
 	}, nil
 }

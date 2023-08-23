@@ -16,8 +16,7 @@ CacheRedis:
     Pass:
     Type: node
 
-Redis:
-  Key: rds
+BizRedis:
   Host: 127.0.0.1:6379
   Pass:
   Type: node

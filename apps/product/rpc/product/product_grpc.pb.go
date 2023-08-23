@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.1
-// source: product/rpc/product.proto
+// source: apps/product/rpc/product.proto
 
 package product
 
@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type ProductClient interface {
 	Products(ctx context.Context, in *ProductsRequest, opts ...grpc.CallOption) (*ProductsResponse, error)
 	Product(ctx context.Context, in *ProductItemRequest, opts ...grpc.CallOption) (*ProductItem, error)
+	ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error)
+	OperationProduct(ctx context.Context, in *OperationProductRequest, opts ...grpc.CallOption) (*OperationProductResponse, error)
 }
 
 type productClient struct {
@@ -52,12 +54,32 @@ func (c *productClient) Product(ctx context.Context, in *ProductItemRequest, opt
 	return out, nil
 }
 
+func (c *productClient) ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error) {
+	out := new(ProductListResponse)
+	err := c.cc.Invoke(ctx, "/product.Product/ProductList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productClient) OperationProduct(ctx context.Context, in *OperationProductRequest, opts ...grpc.CallOption) (*OperationProductResponse, error) {
+	out := new(OperationProductResponse)
+	err := c.cc.Invoke(ctx, "/product.Product/OperationProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductServer is the server API for Product service.
 // All implementations must embed UnimplementedProductServer
 // for forward compatibility
 type ProductServer interface {
 	Products(context.Context, *ProductsRequest) (*ProductsResponse, error)
 	Product(context.Context, *ProductItemRequest) (*ProductItem, error)
+	ProductList(context.Context, *ProductListRequest) (*ProductListResponse, error)
+	OperationProduct(context.Context, *OperationProductRequest) (*OperationProductResponse, error)
 	mustEmbedUnimplementedProductServer()
 }
 
@@ -70,6 +92,12 @@ func (UnimplementedProductServer) Products(context.Context, *ProductsRequest) (*
 }
 func (UnimplementedProductServer) Product(context.Context, *ProductItemRequest) (*ProductItem, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Product not implemented")
+}
+func (UnimplementedProductServer) ProductList(context.Context, *ProductListRequest) (*ProductListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductList not implemented")
+}
+func (UnimplementedProductServer) OperationProduct(context.Context, *OperationProductRequest) (*OperationProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OperationProduct not implemented")
 }
 func (UnimplementedProductServer) mustEmbedUnimplementedProductServer() {}
 
@@ -120,6 +148,42 @@ func _Product_Product_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Product_ProductList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServer).ProductList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/product.Product/ProductList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServer).ProductList(ctx, req.(*ProductListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Product_OperationProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OperationProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServer).OperationProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/product.Product/OperationProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServer).OperationProduct(ctx, req.(*OperationProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Product_ServiceDesc is the grpc.ServiceDesc for Product service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -135,7 +199,15 @@ var Product_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "Product",
 			Handler:    _Product_Product_Handler,
 		},
+		{
+			MethodName: "ProductList",
+			Handler:    _Product_ProductList_Handler,
+		},
+		{
+			MethodName: "OperationProduct",
+			Handler:    _Product_OperationProduct_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "product/rpc/product.proto",
+	Metadata: "apps/product/rpc/product.proto",
 }

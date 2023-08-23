@@ -13,14 +13,20 @@ import (
 )
 
 type (
-	ProductItem        = product.ProductItem
-	ProductItemRequest = product.ProductItemRequest
-	ProductsRequest    = product.ProductsRequest
-	ProductsResponse   = product.ProductsResponse
+	OperationProductRequest  = product.OperationProductRequest
+	OperationProductResponse = product.OperationProductResponse
+	ProductItem              = product.ProductItem
+	ProductItemRequest       = product.ProductItemRequest
+	ProductListRequest       = product.ProductListRequest
+	ProductListResponse      = product.ProductListResponse
+	ProductsRequest          = product.ProductsRequest
+	ProductsResponse         = product.ProductsResponse
 
 	Product interface {
 		Products(ctx context.Context, in *ProductsRequest, opts ...grpc.CallOption) (*ProductsResponse, error)
 		Product(ctx context.Context, in *ProductItemRequest, opts ...grpc.CallOption) (*ProductItem, error)
+		ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error)
+		OperationProduct(ctx context.Context, in *OperationProductRequest, opts ...grpc.CallOption) (*OperationProductResponse, error)
 	}
 
 	defaultProduct struct {
@@ -42,4 +48,14 @@ func (m *defaultProduct) Products(ctx context.Context, in *ProductsRequest, opts
 func (m *defaultProduct) Product(ctx context.Context, in *ProductItemRequest, opts ...grpc.CallOption) (*ProductItem, error) {
 	client := product.NewProductClient(m.cli.Conn())
 	return client.Product(ctx, in, opts...)
+}
+
+func (m *defaultProduct) ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error) {
+	client := product.NewProductClient(m.cli.Conn())
+	return client.ProductList(ctx, in, opts...)
+}
+
+func (m *defaultProduct) OperationProduct(ctx context.Context, in *OperationProductRequest, opts ...grpc.CallOption) (*OperationProductResponse, error) {
+	client := product.NewProductClient(m.cli.Conn())
+	return client.OperationProduct(ctx, in, opts...)
 }

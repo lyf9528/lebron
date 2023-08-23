@@ -31,3 +31,13 @@ func (s *ProductServer) Product(ctx context.Context, in *product.ProductItemRequ
 	l := logic.NewProductLogic(ctx, s.svcCtx)
 	return l.Product(in)
 }
+
+func (s *ProductServer) ProductList(ctx context.Context, in *product.ProductListRequest) (*product.ProductListResponse, error) {
+	l := logic.NewProductListLogic(ctx, s.svcCtx)
+	return l.ProductList(in)
+}
+
+func (s *ProductServer) OperationProduct(ctx context.Context, in *product.OperationProductRequest) (*product.OperationProductResponse, error) {
+	l := logic.NewOperationProductLogic(ctx, s.svcCtx)
+	return l.OperationProduct(in)
+}

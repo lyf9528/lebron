@@ -1,7 +1,7 @@
 rpc-go:
 	@echo "输入app名称"
 	@read app; \
-	zeroctl rpc protoc $$app/rpc/$$app.proto --go_out=$$app/rpc --go-grpc_out=$$app/rpc --zrpc_out=$$app/rpc;
+	zeroctl rpc protoc apps/$$app/rpc/$$app.proto --go_out=apps/$$app/rpc --go-grpc_out=apps/$$app/rpc --zrpc_out=apps/$$app/rpc;
 
 api-go:
 	@echo "输入app与api名称,以空格隔开"
